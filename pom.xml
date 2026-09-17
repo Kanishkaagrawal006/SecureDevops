@@ -1,53 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Spring Boot Parent -->
+    <!-- =========================================================
+         Spring Boot Parent
+         ========================================================= -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1</version>
         <relativePath/>
     </parent>
 
-    <!-- Project Information -->
+
+    <!-- =========================================================
+         Project Information
+         ========================================================= -->
     <groupId>com.example</groupId>
     <artifactId>SecureDev</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <name>SecureDev</name>
     <description>SecureDev</description>
-    <url/>
 
-    <licenses>
-        <license/>
-    </licenses>
 
-    <developers>
-        <developer/>
-    </developers>
-
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
-
-    <!-- Properties -->
+    <!-- =========================================================
+         Properties
+         ========================================================= -->
     <properties>
+
+        <!-- Java -->
         <java.version>17</java.version>
 
         <!-- SonarCloud -->
         <sonar.projectKey>Kanishkaagrawal006_SecureDevops</sonar.projectKey>
         <sonar.organization>kanishkaagrawal006</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
     </properties>
 
-    <!-- Dependencies -->
+
+    <!-- =========================================================
+         Dependencies
+         ========================================================= -->
     <dependencies>
 
         <!-- H2 Console -->
@@ -75,7 +74,6 @@
         </dependency>
 
         <!-- Spring Data JPA -->
-        <!-- Required for @Entity, @Id, JpaRepository, etc. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -102,6 +100,11 @@
             <optional>true</optional>
         </dependency>
 
+
+        <!-- =====================================================
+             Test Dependencies
+             ===================================================== -->
+
         <!-- Actuator Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -125,17 +128,26 @@
 
     </dependencies>
 
-    <!-- Build Configuration -->
+
+    <!-- =========================================================
+         Build Configuration
+         ========================================================= -->
     <build>
+
         <plugins>
 
-            <!-- Spring Boot Maven Plugin -->
+            <!-- =================================================
+                 Spring Boot Maven Plugin
+                 ================================================= -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Maven Compiler Plugin -->
+
+            <!-- =================================================
+                 Maven Compiler Plugin
+                 ================================================= -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -163,6 +175,7 @@
                         </configuration>
                     </execution>
 
+
                     <!-- Test Compile -->
                     <execution>
                         <id>default-testCompile</id>
@@ -187,25 +200,34 @@
                 </executions>
             </plugin>
 
-            <!-- OWASP Dependency-Check -->
+
+            <!-- =================================================
+                 OWASP Dependency-Check
+                 ================================================= -->
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
                 <version>10.0.4</version>
 
                 <configuration>
+
+                    <!-- Generate ALL report formats -->
                     <format>ALL</format>
 
-                    <!-- Phase 8 Security Gate -->
-                    <!-- Build fails on Critical CVEs (CVSS >= 9) -->
+                    <!--
+                        Security Gate:
+                        Fail the build when CVSS >= 9.0
+                    -->
                     <failBuildOnCVSS>9</failBuildOnCVSS>
 
-                    <!-- NVD API Key from GitHub Secret -->
+                    <!-- NVD API Key from GitHub Actions -->
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+
                 </configuration>
             </plugin>
 
         </plugins>
+
     </build>
 
 </project>
