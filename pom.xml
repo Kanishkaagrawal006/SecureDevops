@@ -228,6 +228,10 @@
                     <!-- NVD API Key from GitHub Actions -->
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
 
+                    <!-- Not using OSS Index (no account/credentials configured) —
+                         disable it explicitly rather than letting its 401 crash the build -->
+                    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+
                 </configuration>
             </plugin>
 
