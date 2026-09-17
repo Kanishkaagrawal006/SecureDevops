@@ -36,6 +36,11 @@
         <!-- Java -->
         <java.version>17</java.version>
 
+        <!-- Tomcat override: 11.0.24 (Spring Boot 4.1.1's managed version)
+             has known Critical CVEs (auth-bypass / access-control issues).
+             Force a newer patched line until the parent BOM catches up. -->
+        <tomcat.version>11.0.25</tomcat.version>
+
         <!-- SonarCloud -->
         <sonar.projectKey>Kanishkaagrawal006_SecureDevops</sonar.projectKey>
         <sonar.organization>kanishkaagrawal006</sonar.organization>
