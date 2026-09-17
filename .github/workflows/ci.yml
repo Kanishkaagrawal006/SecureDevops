@@ -102,12 +102,20 @@ jobs:
         with:
           sarif_file: app/semgrep-results.sarif
 
+      - name: Semgrep Security Gate (fail on ERROR severity)
+        run: >
+          semgrep scan
+          --config p/ci
+          --config p/java
+          --config p/owasp-top-ten
+          --severity ERROR
+
 
       # --------------------------------
       # OWASP Dependency-Check
       # --------------------------------
       - name: OWASP Dependency-Check
-        continue-on-error: true
+        # Phase 8: gate is live — fails the build on Critical CVEs (failBuildOnCVSS set in pom.xml)
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: mvn -B org.owasp:dependency-check-maven:check
@@ -120,19 +128,6 @@ jobs:
           path: |
             app/target/dependency-check-report.html
             app/target/dependency-check-report.json
-
-      # NOTE:
-      # This requires Dependency-Check to actually generate
-      # dependency-check-report.sarif.
-      #
-      # Do not keep this step until SARIF generation is configured.
-      #
-      # - name: Upload OWASP results to GitHub Security tab
-      #   if: always()
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: app/target/dependency-check-report.sarif
-
 
       # --------------------------------
       # Upload test results
@@ -186,3 +181,11 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results.sarif
+
+      - name: Trivy Security Gate (fail on CRITICAL)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: catalog-app:${{ github.sha }}
+          format: table
+          severity: CRITICAL
+          exit-code: '1'
