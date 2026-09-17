@@ -124,6 +124,19 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- OWASP Dependency-Check (Phase 6) - scans dependencies for known CVEs -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>10.0.4</version>
+                <configuration>
+                    <format>ALL</format>
+                    <!-- Report-only for now: never fails the build here. A later phase tightens this into a real gate. -->
+                    <failBuildOnCVSS>11</failBuildOnCVSS>
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
