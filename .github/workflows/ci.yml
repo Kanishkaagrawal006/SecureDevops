@@ -29,7 +29,6 @@ jobs:
         with:
           fetch-depth: 0
 
-
       # --------------------------------
       # Java
       # --------------------------------
@@ -40,7 +39,6 @@ jobs:
           java-version: '21'
           cache: maven
 
-
       # --------------------------------
       # Build & Test
       # --------------------------------
@@ -49,7 +47,6 @@ jobs:
 
       - name: Run tests
         run: mvn -B test
-
 
       # --------------------------------
       # SonarCloud
@@ -67,7 +64,6 @@ jobs:
           mvn -B
           org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar
           -Dsonar.token=$SONAR_TOKEN
-
 
       # --------------------------------
       # Semgrep SAST
@@ -87,7 +83,8 @@ jobs:
           --config p/ci
           --config p/java
           --config p/owasp-top-ten
-          --sarif --output semgrep-results.sarif
+          --sarif
+          --output semgrep-results.sarif
 
       - name: Upload Semgrep SARIF (artifact)
         if: always()
@@ -102,6 +99,9 @@ jobs:
         with:
           sarif_file: app/semgrep-results.sarif
 
+      # --------------------------------
+      # Semgrep Security Gate
+      # --------------------------------
       - name: Semgrep Security Gate (fail on ERROR severity)
         run: >
           semgrep scan
@@ -110,12 +110,10 @@ jobs:
           --config p/owasp-top-ten
           --severity ERROR
 
-
       # --------------------------------
       # OWASP Dependency-Check
       # --------------------------------
       - name: OWASP Dependency-Check
-        # Phase 8: gate is live — fails the build on Critical CVEs (failBuildOnCVSS set in pom.xml)
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: mvn -B org.owasp:dependency-check-maven:check
@@ -139,7 +137,6 @@ jobs:
           name: surefire-reports
           path: app/target/surefire-reports/
 
-
       # --------------------------------
       # Upload JAR
       # --------------------------------
@@ -149,16 +146,14 @@ jobs:
           name: catalog-jar
           path: app/target/*.jar
 
-
       # --------------------------------
       # Docker
       # --------------------------------
       - name: Build Docker image
         run: docker build -t catalog-app:${{ github.sha }} .
 
-
       # --------------------------------
-      # Trivy
+      # Trivy Report
       # --------------------------------
       - name: Run Trivy vulnerability scan
         uses: aquasecurity/trivy-action@v0.36.0
@@ -182,8 +177,11 @@ jobs:
         with:
           sarif_file: trivy-results.sarif
 
+      # --------------------------------
+      # Trivy Security Gate
+      # --------------------------------
       - name: Trivy Security Gate (fail on CRITICAL)
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: catalog-app:${{ github.sha }}
           format: table
